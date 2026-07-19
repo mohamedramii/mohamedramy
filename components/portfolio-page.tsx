@@ -1,19 +1,22 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 import { ArrowDownRight, ArrowUpRight, Download, Mail, Menu, MoveRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Flip } from "gsap/Flip";
 import { useGSAP } from "@gsap/react";
 import { Threads } from "@/components/threads";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { archiveProjects, experience, featuredProjects } from "@/lib/portfolio-data";
+import { archiveProjects, experience, featuredProjects, type Project } from "@/lib/portfolio-data";
+import { stageProjectTransition } from "@/lib/project-transition";
 import { cn } from "@/lib/utils";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
 
 function RouteMonogram({ className = "" }: { className?: string }) {
   return (
@@ -85,6 +88,96 @@ function SectionHeader({
       </div>
       {aside && <p className="section-aside">{aside}</p>}
     </div>
+  );
+}
+
+function FeaturedProjectCard({ project }: { project: Project }) {
+  const content = (
+    <>
+      <div className="project-topline">
+        <span>{project.index}</span>
+        <span>{project.category}</span>
+        <span>{project.slug ? "Open case study" : "Selected case"}</span>
+      </div>
+      <div className="project-layout">
+        <div className="project-copy">
+          <h3>{project.title}</h3>
+          <p className="project-description">{project.description}</p>
+          <p className="project-impact"><span>Impact</span>{project.impact}</p>
+          <div className="project-tags">
+            {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
+          </div>
+          {project.slug ? (
+            <span className="project-link">
+              Explore full case study <ArrowUpRight size={18} />
+            </span>
+          ) : (
+            <a href="#contact" className="project-link">
+              Discuss the project <ArrowUpRight size={18} />
+            </a>
+          )}
+        </div>
+        <div
+          className="project-media"
+          data-project-source={project.slug}
+          data-flip-id={project.slug ? `project-${project.slug}` : undefined}
+        >
+          <Image
+            src={project.image}
+            alt={project.imageAlt}
+            fill
+            sizes="(max-width: 899px) 92vw, 56vw"
+          />
+          <span className="project-media-label">Real product screen</span>
+        </div>
+      </div>
+    </>
+  );
+
+  if (!project.slug) {
+    return <article className={cn("project-card reveal", project.tone)}>{content}</article>;
+  }
+
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      scroll={false}
+      className={cn("project-card project-card--interactive reveal", project.tone)}
+      aria-label={`Open ${project.title} case study`}
+      onClick={(event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const media = event.currentTarget.querySelector<HTMLElement>("[data-project-source]");
+        if (media) stageProjectTransition(project.slug!, Flip.getState(media, { simple: true, props: "borderRadius" }));
+      }}
+    >
+      {content}
+    </Link>
+  );
+}
+
+function ArchiveProjectCard({ project, index }: { project: (typeof archiveProjects)[number]; index: number }) {
+  return (
+    <Link
+      href={`/work/${project.slug}`}
+      scroll={false}
+      className="archive-card archive-card--interactive"
+      aria-label={`Open ${project.title} case study`}
+      onClick={(event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const media = event.currentTarget.querySelector<HTMLElement>("[data-project-source]");
+        if (media) stageProjectTransition(project.slug, Flip.getState(media, { simple: true, props: "borderRadius" }));
+      }}
+    >
+      <div
+        className="archive-image"
+        data-project-source={project.slug}
+        data-flip-id={`project-${project.slug}`}
+      >
+        <Image src={project.image} alt={project.imageAlt} fill sizes="(max-width: 700px) 82vw, 31vw" />
+        <span className="archive-open">Open case study <ArrowUpRight size={15} /></span>
+      </div>
+      <div><span>0{index + 1}</span><h3>{project.title}</h3><p>{project.type}</p></div>
+    </Link>
   );
 }
 
@@ -379,37 +472,14 @@ export function PortfolioPage() {
 
             <div className="project-stack">
               {featuredProjects.map((project) => (
-                <article className={cn("project-card reveal", project.tone)} key={project.title}>
-                  <div className="project-topline">
-                    <span>{project.index}</span>
-                    <span>{project.category}</span>
-                    <span>Selected case</span>
-                  </div>
-                  <div className="project-layout">
-                    <div className="project-copy">
-                      <h3>{project.title}</h3>
-                      <p className="project-description">{project.description}</p>
-                      <p className="project-impact"><span>Impact</span>{project.impact}</p>
-                      <div className="project-tags">
-                        {project.tags.map((tag) => <Badge key={tag}>{tag}</Badge>)}
-                      </div>
-                      <a href="#contact" className="project-link">
-                        Discuss the project <ArrowUpRight size={18} />
-                      </a>
-                    </div>
-                    <div className="project-media">
-                      <Image
-                        src={project.image}
-                        alt={project.imageAlt}
-                        fill
-                        sizes="(max-width: 899px) 92vw, 56vw"
-                      />
-                      <span className="project-media-label">Real product screen</span>
-                    </div>
-                  </div>
-                </article>
+                <FeaturedProjectCard project={project} key={project.title} />
               ))}
             </div>
+
+            <a className="show-more-work reveal" href="#more-work">
+              <span><small>Continue exploring</small>Show more</span>
+              <i aria-hidden="true"><ArrowDownRight size={22} /></i>
+            </a>
           </div>
         </section>
 
@@ -499,7 +569,7 @@ export function PortfolioPage() {
           </div>
         </section>
 
-        <section className="archive-section" aria-labelledby="archive-title">
+        <section className="archive-section" id="more-work" aria-labelledby="archive-title">
           <div className="section-wrap">
             <SectionHeader
               eyebrow="04 / More work"
@@ -510,12 +580,7 @@ export function PortfolioPage() {
           </div>
           <div className="archive-track reveal">
             {archiveProjects.map((project, index) => (
-              <article className="archive-card" key={project.title}>
-                <div className="archive-image">
-                  <Image src={project.image} alt={`${project.title} project interface`} fill sizes="(max-width: 700px) 78vw, 30vw" />
-                </div>
-                <div><span>0{index + 1}</span><h3>{project.title}</h3><p>{project.type}</p></div>
-              </article>
+              <ArchiveProjectCard project={project} index={index} key={project.title} />
             ))}
           </div>
         </section>

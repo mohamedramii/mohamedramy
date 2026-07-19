@@ -8,6 +8,7 @@ export type Project = {
   imageAlt: string;
   tags: string[];
   tone: string;
+  slug?: string;
 };
 
 export const featuredProjects: Project[] = [
@@ -22,6 +23,7 @@ export const featuredProjects: Project[] = [
     imageAlt: "Nizam Accounting landing interface in Arabic",
     tags: ["Next.js", "TypeScript", "RTL", "Design System"],
     tone: "project--olive",
+    slug: "nizam-accounting",
   },
   {
     index: "02",
@@ -29,11 +31,12 @@ export const featuredProjects: Project[] = [
     category: "Analytics · APIs · Report Builder",
     description:
       "A data-rich marketing workspace for connecting sources, exploring performance and composing reports without manual busywork.",
-    impact: "Integrated product flows that reduced manual reporting effort by approximately 40%.",
+    impact: "Connected source integrations, report composition and data states into one maintainable product flow.",
     image: "/images/projects/khwarizmi.png",
     imageAlt: "Khwarizmi Metrics report builder interface",
     tags: ["React", "APIs", "Charts", "Data Studio"],
     tone: "project--sage",
+    slug: "khwarizmi-metrics",
   },
   {
     index: "03",
@@ -41,11 +44,12 @@ export const featuredProjects: Project[] = [
     category: "Creative Development · Events",
     description:
       "An energetic event experience where narrative, movement and interface respond as one connected visual system.",
-    impact: "A motion-led build tuned for a sub-two-second load and smooth 60fps interactions.",
+    impact: "Built a bilingual motion system that keeps narrative and interaction coherent across the experience.",
     image: "/images/projects/snap-action.png",
     imageAlt: "Snap Action event website hero",
     tags: ["GSAP", "Three.js", "Motion", "Performance"],
     tone: "project--lime",
+    slug: "snap-action",
   },
   {
     index: "04",
@@ -53,21 +57,22 @@ export const featuredProjects: Project[] = [
     category: "Arabic LMS · AI · Dashboard",
     description:
       "An Arabic-first learning platform combining courses, a digital library, reports and an AI assistant in a modular dashboard.",
-    impact: "Built a scalable architecture across 15+ screens with reusable product patterns.",
+    impact: "Shaped reusable learning patterns across courses, lessons, reports, library and AI-assisted guidance.",
     image: "/images/projects/jeeltech.png",
     imageAlt: "JeelTech Arabic learning dashboard",
     tags: ["Next.js", "Arabic UX", "AI", "Architecture"],
     tone: "project--warm",
+    slug: "jeeltech",
   },
 ];
 
 export const archiveProjects = [
-  { title: "vbooking", type: "Travel operations", image: "/images/projects/vbooking.png" },
-  { title: "RADX", type: "Smart hospitality", image: "/images/projects/radx.jpg" },
-  { title: "BookYourVibes", type: "Yacht booking", image: "/images/projects/bookyourvibes.jpg" },
-  { title: "Travelio", type: "Travel DMC", image: "/images/projects/travelio.png" },
-  { title: "Culin", type: "Editorial interiors", image: "/images/projects/culin.png" },
-  { title: "i-Fish", type: "Marine operations", image: "/images/projects/ifish.png" },
+  { title: "vbooking", type: "Travel operations", image: "/images/case-studies/vbooking/cover.webp", imageAlt: "vbooking travel CRM and booking operations interface", slug: "vbooking" },
+  { title: "RADX", type: "Smart hospitality", image: "/images/case-studies/radx/cover.webp", imageAlt: "RADX smart hospitality and QR concierge interface", slug: "radx" },
+  { title: "BookYourVibes", type: "Yacht booking", image: "/images/case-studies/bookyourvibes/cover.webp", imageAlt: "BookYourVibes yacht discovery and booking interface", slug: "bookyourvibes" },
+  { title: "Travelio", type: "Travel DMC", image: "/images/case-studies/travelio/cover.webp", imageAlt: "Travelio destination management website for Turkey", slug: "travelio" },
+  { title: "Culin", type: "Editorial interiors", image: "/images/case-studies/culin/cover.webp", imageAlt: "Culin custom interiors editorial website", slug: "culin" },
+  { title: "i-Fish", type: "Marine operations", image: "/images/case-studies/i-fish/cover.webp", imageAlt: "i-Fish Arabic marine operations platform", slug: "i-fish" },
 ];
 
 export const experience = [

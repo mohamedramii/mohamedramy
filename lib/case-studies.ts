@@ -1,0 +1,148 @@
+export const caseStudies = {
+  "nizam-accounting": {
+    slug: "nizam-accounting",
+    title: "Nizam Accounting",
+    shortTitle: "Nizam",
+    category: "Fintech · ERP · RTL product",
+    description:
+      "An Arabic-first accounting platform that connects customers, quotes, invoices, inventory and reporting in one coherent workspace.",
+    role: "Product design · Frontend",
+    platform: "Responsive web app",
+    direction: "Arabic · RTL first",
+    modes: "Light + dark",
+    year: "2026",
+    cover: "/images/case-studies/nizam/landing-hero.png",
+  },
+  "khwarizmi-metrics": {
+    slug: "khwarizmi-metrics",
+    title: "Khwarizmi Metrics",
+    shortTitle: "Khwarizmi",
+    category: "Analytics · Integrations · Report builder",
+    description:
+      "A marketing intelligence workspace that connects data sources and turns them into configurable, reusable reports.",
+    role: "Frontend development · Product UI",
+    platform: "Responsive web app",
+    direction: "English · LTR",
+    modes: "Data-dense workspace",
+    year: "2026",
+    cover: "/images/case-studies/khwarizmi/report-builder.png",
+  },
+  "snap-action": {
+    slug: "snap-action",
+    title: "Snap Action",
+    shortTitle: "Snap Action",
+    category: "Creative development · Motion · Bilingual",
+    description:
+      "A bilingual event-production website where pace, motion and interface work together as one cinematic brand experience.",
+    role: "Creative frontend development",
+    platform: "Responsive brand website",
+    direction: "Arabic + English",
+    modes: "Motion-led dark interface",
+    year: "2026",
+    cover: "/images/case-studies/snap-action/hero-en.png",
+  },
+  jeeltech: {
+    slug: "jeeltech",
+    title: "JeelTech",
+    shortTitle: "JeelTech",
+    category: "Arabic LMS · AI · Dashboard",
+    description:
+      "An Arabic-first learning platform that brings courses, lessons, a digital library, progress reports and AI guidance into one dashboard.",
+    role: "Frontend development · Product UI",
+    platform: "Responsive learning platform",
+    direction: "Arabic · RTL first",
+    modes: "Learner dashboard",
+    year: "2025",
+    cover: "/images/case-studies/jeeltech/home.png",
+  },
+  vbooking: {
+    slug: "vbooking",
+    title: "vbooking",
+    shortTitle: "vbooking",
+    category: "Travel CRM · Dynamic booking · Operations",
+    description:
+      "A connected travel platform that brings public discovery, booking flows, customer context and agent operations into one product system.",
+    role: "Frontend development · Product UI",
+    platform: "Responsive travel platform",
+    direction: "English · LTR",
+    modes: "Public website + CRM",
+    year: "2026",
+    cover: "/images/case-studies/vbooking/cover.webp",
+  },
+  radx: {
+    slug: "radx",
+    title: "RADX",
+    shortTitle: "RADX",
+    category: "Smart hospitality · QR concierge · Services",
+    description:
+      "A smart hospitality experience that turns one QR scan into location-aware guidance, services, bookings and guest support.",
+    role: "Frontend development · Product storytelling",
+    platform: "Responsive hospitality website",
+    direction: "English + Arabic",
+    modes: "Guest experience + operator value",
+    year: "2026",
+    cover: "/images/case-studies/radx/cover.webp",
+  },
+  bookyourvibes: {
+    slug: "bookyourvibes",
+    title: "BookYourVibes",
+    shortTitle: "BookYourVibes",
+    category: "Yacht marketplace · Discovery · Booking",
+    description:
+      "A Dubai yacht marketplace that connects occasion-led discovery, detailed fleet comparison and a practical booking path.",
+    role: "Frontend development · Marketplace UI",
+    platform: "Responsive booking website",
+    direction: "English + Arabic",
+    modes: "Discovery + transaction",
+    year: "2025",
+    cover: "/images/case-studies/bookyourvibes/cover.webp",
+  },
+  travelio: {
+    slug: "travelio",
+    title: "Travelio",
+    shortTitle: "Travelio",
+    category: "Travel DMC · Destinations · Packages",
+    description:
+      "A Turkey-focused destination management website balancing travel inspiration with a structured service offer for global partners.",
+    role: "Frontend development · Responsive UI",
+    platform: "Responsive DMC website",
+    direction: "English · LTR",
+    modes: "Traveler + partner journeys",
+    year: "2025",
+    cover: "/images/case-studies/travelio/cover.webp",
+  },
+  culin: {
+    slug: "culin",
+    title: "Culin",
+    shortTitle: "Culin",
+    category: "Luxury interiors · Editorial · Motion",
+    description:
+      "A material-led digital showroom for custom kitchens and interiors, composed with editorial scale and restrained motion.",
+    role: "Creative frontend development",
+    platform: "Responsive brand website",
+    direction: "English · LTR",
+    modes: "Dark editorial experience",
+    year: "2026",
+    cover: "/images/case-studies/culin/cover.webp",
+  },
+  "i-fish": {
+    slug: "i-fish",
+    title: "i-Fish",
+    shortTitle: "i-Fish",
+    category: "Marine ERP · Arabic RTL · Operations",
+    description:
+      "An Arabic-first product story for managing fishing fleets, catch inventory, delivery workflows and marine accounting.",
+    role: "Frontend development · RTL product UI",
+    platform: "Responsive marine platform",
+    direction: "Arabic · RTL first",
+    modes: "Operations + accounting",
+    year: "2026",
+    cover: "/images/case-studies/i-fish/cover.webp",
+  },
+} as const;
+
+export type CaseStudySlug = keyof typeof caseStudies;
+
+export function getCaseStudy(slug: string) {
+  return caseStudies[slug as CaseStudySlug];
+}
