@@ -135,6 +135,7 @@ export function PortfolioPage() {
             });
 
             gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".reveal")).forEach((element) => {
+              if (!desktop && element.matches(".project-card")) return;
               gsap.from(element, {
                 autoAlpha: 0,
                 y: 42,
@@ -144,6 +145,26 @@ export function PortfolioPage() {
                   trigger: element,
                   start: "clamp(top 86%)",
                   toggleActions: "play none none reverse",
+                },
+              });
+            });
+          }
+
+          if (!desktop && !reduceMotion) {
+            const projectCards = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".project-card"));
+            projectCards.slice(0, -1).forEach((card, index) => {
+              gsap.to(card, {
+                autoAlpha: 0.5,
+                y: -12,
+                scale: 0.94,
+                ease: "none",
+                overwrite: "auto",
+                scrollTrigger: {
+                  trigger: projectCards[index + 1],
+                  start: "top 92%",
+                  end: "top 20%",
+                  scrub: 0.55,
+                  invalidateOnRefresh: true,
                 },
               });
             });
@@ -191,6 +212,29 @@ export function PortfolioPage() {
                     start: "clamp(top 78%)",
                     end: "clamp(bottom 54%)",
                     scrub: 0.8,
+                    invalidateOnRefresh: true,
+                  },
+            });
+          }
+
+          const capabilityRail = root.querySelector<HTMLElement>(".capability-rail-fill");
+          if (capabilityRail) {
+            gsap.set(capabilityRail, { scaleX: 0, transformOrigin: "left center" });
+            gsap.to(capabilityRail, {
+              scaleX: 1,
+              duration: reduceMotion ? 1.1 : undefined,
+              ease: "none",
+              scrollTrigger: reduceMotion
+                ? {
+                    trigger: root.querySelector(".capability-rail"),
+                    start: "clamp(top 88%)",
+                    toggleActions: "play none none reset",
+                  }
+                : {
+                    trigger: root.querySelector(".capability-rail"),
+                    start: "clamp(top 88%)",
+                    end: "clamp(bottom 62%)",
+                    scrub: 0.7,
                     invalidateOnRefresh: true,
                   },
             });
@@ -390,6 +434,25 @@ export function PortfolioPage() {
               <div className="process-node process-node--2"><span>02</span><strong>UX flow</strong><p>Complex tasks become focused decisions and clear states.</p></div>
               <div className="process-node process-node--3"><span>03</span><strong>Interface system</strong><p>Patterns, hierarchy and components create consistency.</p></div>
               <div className="process-node process-node--4"><span>04</span><strong>Production code</strong><p>Scalable React architecture carries the intent to release.</p></div>
+            </div>
+
+            <div className="capability-rail reveal" aria-label="One connected workflow from definition to delivery">
+              <div className="capability-rail-intro">
+                <span>One continuous workflow</span>
+                <p>Decisions stay connected from the first requirement to the released interface.</p>
+              </div>
+              <div className="capability-rail-track" aria-hidden="true">
+                <span className="capability-rail-base" />
+                <span className="capability-rail-fill" />
+                <span className="capability-rail-dot capability-rail-dot--1" />
+                <span className="capability-rail-dot capability-rail-dot--2" />
+                <span className="capability-rail-dot capability-rail-dot--3" />
+              </div>
+              <div className="capability-rail-labels" aria-hidden="true">
+                <span><b>01</b>Define</span>
+                <span><b>02</b>Shape</span>
+                <span><b>03</b>Ship</span>
+              </div>
             </div>
 
             <div className="capability-grid">
