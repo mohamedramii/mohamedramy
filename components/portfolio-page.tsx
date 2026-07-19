@@ -230,12 +230,12 @@ export function PortfolioPage() {
               </div>
               <h1 id="hero-title">
                 <span className="hero-line"><span className="hero-word">Complex</span></span>
-                <span className="hero-line hero-line--accent"><span className="hero-word">logic,</span></span>
-                <span className="hero-line"><span className="hero-word">made visible.</span></span>
+                <span className="hero-line hero-line--accent"><span className="hero-word">products,</span></span>
+                <span className="hero-line"><span className="hero-word">made clear.</span></span>
               </h1>
               <p className="hero-copy">
-                I&apos;m Mohamed Ramy. I turn dense product requirements into clear, scalable interfaces—
-                from the first Figma flow to production-ready React and Next.js.
+                I bring product thinking, UX design and frontend engineering together to turn complex
+                ideas into clear, production-ready experiences.
               </p>
               <div className="hero-actions">
                 <a className={buttonVariants({ variant: "primary", size: "lg" })} href="#work">
@@ -474,7 +474,7 @@ export function PortfolioPage() {
       <footer>
         <div className="footer-top">
           <a className="brand-link" href="#top"><RouteMonogram className="brand-mark" /><span className="brand-name">Mohamed Ramy</span></a>
-          <p>Logic, made visible.</p>
+          <p>Clarity, designed and built.</p>
           <div className="footer-links">
             <a href="https://github.com/mohamedramii" target="_blank" rel="noreferrer">GitHub</a>
             <a href="https://www.linkedin.com/in/mohamed-ramy11" target="_blank" rel="noreferrer">LinkedIn</a>

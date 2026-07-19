@@ -47,6 +47,10 @@ a {
   text-decoration: none;
 }
 
+.button-primary {
+  color: var(--ink) !important;
+}
+
 button,
 input,
 textarea,

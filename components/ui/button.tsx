@@ -8,7 +8,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "border-[var(--signal)] bg-[var(--signal)] px-6 text-[var(--ink)] hover:-translate-y-0.5 hover:bg-[var(--ivory)] hover:border-[var(--ivory)]",
+          "button-primary border-[var(--signal)] bg-[var(--signal)] px-6 text-[var(--ink)] hover:-translate-y-0.5 hover:bg-[var(--ivory)] hover:border-[var(--ivory)]",
         outline:
           "border-white/25 bg-white/[0.03] px-6 text-[var(--ivory)] hover:-translate-y-0.5 hover:border-[var(--signal)] hover:text-[var(--signal)]",
         ink:

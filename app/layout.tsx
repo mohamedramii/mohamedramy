@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "Egypt",
   ],
   openGraph: {
-    title: "Mohamed Ramy — Logic, made visible.",
+    title: "Mohamed Ramy — Complex products, made clear.",
     description: "Product-minded frontend development and UI/UX design.",
     images: ["/images/mohamed-ramy-key-visual.png"],
     type: "website",

@@ -12,6 +12,8 @@
 .DS_Store
 *.log
 .env*
+/nossa/
+/research/hawawshi-brand/
 
 # typescript
 *.tsbuildinfo
