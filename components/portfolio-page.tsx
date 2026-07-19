@@ -536,7 +536,12 @@ export function PortfolioPage() {
                 founders who care about both the experience people see and the architecture beneath it.
               </p>
               <div className="about-actions">
-                <a className={buttonVariants({ variant: "ink", size: "lg" })} href="/Mohamed-Ramy-CV.pdf" download>
+                <a
+                  className={buttonVariants({ variant: "ink", size: "lg" })}
+                  href="https://drive.google.com/file/d/1I0FlHp7pkS5BwcnIPWdFU7CTX2reB-uS/view?usp=sharing"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   Download résumé <Download size={18} />
                 </a>
                 <a className="text-link" href="https://www.linkedin.com/in/mohamed-ramy11" target="_blank" rel="noreferrer">

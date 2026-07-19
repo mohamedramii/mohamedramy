@@ -12,7 +12,7 @@ export const buttonVariants = cva(
         outline:
           "border-white/25 bg-white/[0.03] px-6 text-[var(--ivory)] hover:-translate-y-0.5 hover:border-[var(--signal)] hover:text-[var(--signal)]",
         ink:
-          "border-[var(--ink)] bg-[var(--ink)] px-6 text-[var(--ivory)] hover:-translate-y-0.5 hover:bg-[var(--olive)] hover:border-[var(--olive)]",
+          "button-ink border-[var(--ink)] bg-[var(--ink)] px-6 text-[var(--ivory)] hover:-translate-y-0.5 hover:bg-[var(--olive)] hover:border-[var(--olive)]",
         ghost:
           "border-transparent bg-transparent px-2 text-current hover:text-[var(--signal)]",
       },
