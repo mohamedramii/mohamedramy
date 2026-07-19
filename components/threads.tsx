@@ -115,95 +115,171 @@ export function Threads({
     const container = containerRef.current;
     if (!container) return;
     const initialProps = propsRef.current;
-
-    const renderer = new Renderer({ alpha: true });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    container.appendChild(gl.canvas);
-
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex: vertexShader,
-      fragment: fragmentShader,
-      uniforms: {
-        iTime: { value: 0 },
-        iResolution: { value: new Color(1, 1, 1) },
-        uColor: { value: new Color(...initialProps.color) },
-        uAmplitude: { value: initialProps.amplitude },
-        uDistance: { value: initialProps.distance },
-        uMouse: { value: new Float32Array([0.5, 0.5]) },
-      },
-    });
-    const mesh = new Mesh(gl, { geometry, program });
-
-    const resize = () => {
-      const { clientWidth, clientHeight } = container;
-      const baseDpr = Math.min(window.devicePixelRatio || 1, 2);
-      const longestSide = Math.max(clientWidth, clientHeight) * baseDpr;
-      renderer.dpr = longestSide > 1920 ? (baseDpr * 1920) / longestSide : baseDpr;
-      renderer.setSize(clientWidth, clientHeight);
-      program.uniforms.iResolution.value.set(
-        gl.canvas.width,
-        gl.canvas.height,
-        gl.canvas.width / gl.canvas.height,
-      );
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reducedMotion = motionQuery.matches;
+    const onMotionPreferenceChange = (event: MediaQueryListEvent) => {
+      reducedMotion = event.matches;
     };
-
-    const resizeObserver = new ResizeObserver(resize);
-    resizeObserver.observe(container);
-    resize();
-
-    const currentMouse = [0.5, 0.5];
-    let targetMouse = [0.5, 0.5];
-    const onMouseMove = (event: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      targetMouse = [
-        (event.clientX - rect.left) / rect.width,
-        1 - (event.clientY - rect.top) / rect.height,
-      ];
-    };
-    const onMouseLeave = () => {
-      targetMouse = [0.5, 0.5];
-    };
-    container.addEventListener("mousemove", onMouseMove);
-    container.addEventListener("mouseleave", onMouseLeave);
-
-    let visible = true;
-    const intersectionObserver = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-    });
-    intersectionObserver.observe(container);
-
-    const update = (time: number) => {
-      frameRef.current = requestAnimationFrame(update);
-      if (!visible || document.hidden) return;
-      const next = propsRef.current;
-      program.uniforms.uColor.value.set(...next.color);
-      program.uniforms.uAmplitude.value = next.amplitude;
-      program.uniforms.uDistance.value = next.distance;
-      if (next.enableMouseInteraction) {
-        currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
-        currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
+    const removeMotionPreferenceListener = () => {
+      if (typeof motionQuery.removeEventListener === "function") {
+        motionQuery.removeEventListener("change", onMotionPreferenceChange);
+      } else {
+        motionQuery.removeListener(onMotionPreferenceChange);
       }
-      program.uniforms.uMouse.value[0] = next.enableMouseInteraction ? currentMouse[0] : 0.5;
-      program.uniforms.uMouse.value[1] = next.enableMouseInteraction ? currentMouse[1] : 0.5;
-      program.uniforms.iTime.value = time * 0.001;
-      renderer.render({ scene: mesh });
     };
-    frameRef.current = requestAnimationFrame(update);
+    if (typeof motionQuery.addEventListener === "function") {
+      motionQuery.addEventListener("change", onMotionPreferenceChange);
+    } else {
+      motionQuery.addListener(onMotionPreferenceChange);
+    }
 
-    return () => {
-      cancelAnimationFrame(frameRef.current);
-      resizeObserver.disconnect();
-      intersectionObserver.disconnect();
-      container.removeEventListener("mousemove", onMouseMove);
-      container.removeEventListener("mouseleave", onMouseLeave);
-      if (container.contains(gl.canvas)) container.removeChild(gl.canvas);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
-    };
+    let renderer: Renderer | undefined;
+    let gl: Renderer["gl"] | undefined;
+    let resizeObserver: ResizeObserver | undefined;
+    let intersectionObserver: IntersectionObserver | undefined;
+    let renderedOnce = false;
+    let visible = true;
+
+    try {
+      renderer = new Renderer({ alpha: true });
+      gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      container.appendChild(gl.canvas);
+
+      const geometry = new Triangle(gl);
+      const program = new Program(gl, {
+        vertex: vertexShader,
+        fragment: fragmentShader,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: { value: new Color(1, 1, 1) },
+          uColor: { value: new Color(...initialProps.color) },
+          uAmplitude: { value: initialProps.amplitude },
+          uDistance: { value: initialProps.distance },
+          uMouse: { value: new Float32Array([0.5, 0.5]) },
+        },
+      });
+      const mesh = new Mesh(gl, { geometry, program });
+
+      const resize = () => {
+        if (!renderer || !gl) return;
+        const width = Math.max(container.clientWidth, 1);
+        const height = Math.max(container.clientHeight, 1);
+        const baseDpr = Math.min(window.devicePixelRatio || 1, 2);
+        const longestSide = Math.max(width, height) * baseDpr;
+        renderer.dpr = longestSide > 1920 ? (baseDpr * 1920) / longestSide : baseDpr;
+        renderer.setSize(width, height);
+        program.uniforms.iResolution.value.set(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height);
+      };
+
+      if (typeof ResizeObserver !== "undefined") {
+        resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(container);
+      } else {
+        window.addEventListener("resize", resize);
+      }
+      resize();
+
+      const currentMouse = [0.5, 0.5];
+      let targetMouse = [0.5, 0.5];
+      const onPointerMove = (event: PointerEvent) => {
+        const rect = container.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        targetMouse = [
+          (event.clientX - rect.left) / rect.width,
+          1 - (event.clientY - rect.top) / rect.height,
+        ];
+      };
+      const onPointerLeave = () => {
+        targetMouse = [0.5, 0.5];
+      };
+      container.addEventListener("pointermove", onPointerMove);
+      container.addEventListener("pointerleave", onPointerLeave);
+
+      if (typeof IntersectionObserver !== "undefined") {
+        intersectionObserver = new IntersectionObserver(([entry]) => {
+          visible = entry.isIntersecting;
+        });
+        intersectionObserver.observe(container);
+      }
+
+      const onContextLost = (event: Event) => {
+        event.preventDefault();
+        container.classList.remove("threads--webgl-ready");
+      };
+      const onContextRestored = () => {
+        renderedOnce = false;
+        resize();
+      };
+      gl.canvas.addEventListener("webglcontextlost", onContextLost);
+      gl.canvas.addEventListener("webglcontextrestored", onContextRestored);
+
+      let elapsed = 0;
+      let lastRenderedAt = 0;
+      const update = (time: number) => {
+        frameRef.current = requestAnimationFrame(update);
+        const minimumFrameTime = reducedMotion ? 1000 / 20 : 1000 / 60;
+        if (!visible || document.hidden || time - lastRenderedAt < minimumFrameTime) return;
+        const delta = lastRenderedAt ? Math.min(time - lastRenderedAt, 80) : 16;
+        lastRenderedAt = time;
+        elapsed += delta * (reducedMotion ? 0.3 : 1);
+
+        const next = propsRef.current;
+        program.uniforms.uColor.value.set(...next.color);
+        program.uniforms.uAmplitude.value = next.amplitude * (reducedMotion ? 0.55 : 1);
+        program.uniforms.uDistance.value = next.distance;
+        if (next.enableMouseInteraction && !reducedMotion) {
+          currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
+          currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
+        }
+        program.uniforms.uMouse.value[0] = next.enableMouseInteraction && !reducedMotion ? currentMouse[0] : 0.5;
+        program.uniforms.uMouse.value[1] = next.enableMouseInteraction && !reducedMotion ? currentMouse[1] : 0.5;
+        program.uniforms.iTime.value = elapsed * 0.001;
+        renderer?.render({ scene: mesh });
+
+        if (!renderedOnce) {
+          renderedOnce = true;
+          container.classList.add("threads--webgl-ready");
+        }
+      };
+      frameRef.current = requestAnimationFrame(update);
+
+      return () => {
+        cancelAnimationFrame(frameRef.current);
+        resizeObserver?.disconnect();
+        intersectionObserver?.disconnect();
+        if (!resizeObserver) window.removeEventListener("resize", resize);
+        container.removeEventListener("pointermove", onPointerMove);
+        container.removeEventListener("pointerleave", onPointerLeave);
+        gl?.canvas.removeEventListener("webglcontextlost", onContextLost);
+        gl?.canvas.removeEventListener("webglcontextrestored", onContextRestored);
+        removeMotionPreferenceListener();
+        container.classList.remove("threads--webgl-ready");
+        if (gl && container.contains(gl.canvas)) container.removeChild(gl.canvas);
+        gl?.getExtension("WEBGL_lose_context")?.loseContext();
+      };
+    } catch {
+      removeMotionPreferenceListener();
+      if (gl && container.contains(gl.canvas)) container.removeChild(gl.canvas);
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
+      container.classList.remove("threads--webgl-ready");
+    }
   }, []);
 
-  return <div ref={containerRef} className={className} aria-hidden="true" />;
+  return (
+    <div ref={containerRef} className={className} aria-hidden="true">
+      <svg className="threads-fallback" viewBox="0 0 1000 600" preserveAspectRatio="none">
+        <g className="threads-fallback-motion">
+          {[120, 170, 220, 270, 320, 370, 420, 470].map((y, index) => (
+            <path
+              key={y}
+              d={`M-80 ${y} C170 ${y - 150 + index * 8}, 310 ${y + 145 - index * 5}, 520 ${y - 8} S810 ${y - 150 + index * 6}, 1080 ${y + 20}`}
+            />
+          ))}
+        </g>
+      </svg>
+    </div>
+  );
 }

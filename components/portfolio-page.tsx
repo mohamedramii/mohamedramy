@@ -100,6 +100,7 @@ export function PortfolioPage() {
       media.add(
         {
           desktop: "(min-width: 900px)",
+          mobile: "(max-width: 899px)",
           reduceMotion: "(prefers-reduced-motion: reduce)",
         },
         (context) => {
@@ -109,64 +110,94 @@ export function PortfolioPage() {
           };
 
           if (reduceMotion) {
-            gsap.set(".hero-kicker, .hero-word, .hero-copy, .hero-actions, .hero-portrait, .proof-item, .reveal", {
+            gsap.set(root.querySelectorAll(".hero-kicker, .hero-word, .hero-copy, .hero-actions, .hero-portrait, .proof-item, .reveal"), {
               clearProps: "all",
             });
-            return;
-          }
+          } else {
+            const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+            intro
+              .from(root.querySelector(".hero-kicker"), { autoAlpha: 0, y: 16, duration: 0.5 })
+              .from(root.querySelectorAll(".hero-word"), { autoAlpha: 0, yPercent: 105, duration: 0.85, stagger: 0.065 }, "-=0.24")
+              .from(root.querySelector(".hero-copy"), { autoAlpha: 0, y: 24, duration: 0.65 }, "-=0.46")
+              .from(root.querySelector(".hero-actions"), { autoAlpha: 0, y: 18, duration: 0.55 }, "-=0.4")
+              .from(root.querySelector(".hero-portrait"), { autoAlpha: 0, xPercent: 6, scale: 0.97, duration: 0.9 }, 0.28)
+              .from(root.querySelectorAll(".proof-item"), { autoAlpha: 0, y: 12, duration: 0.45, stagger: 0.08 }, "-=0.42");
 
-          const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-          intro
-            .from(".hero-kicker", { autoAlpha: 0, y: 16, duration: 0.5 })
-            .from(".hero-word", { autoAlpha: 0, yPercent: 105, duration: 0.85, stagger: 0.065 }, "-=0.24")
-            .from(".hero-copy", { autoAlpha: 0, y: 24, duration: 0.65 }, "-=0.46")
-            .from(".hero-actions", { autoAlpha: 0, y: 18, duration: 0.55 }, "-=0.4")
-            .from(".hero-portrait", { autoAlpha: 0, xPercent: 6, scale: 0.97, duration: 0.9 }, 0.28)
-            .from(".proof-item", { autoAlpha: 0, y: 12, duration: 0.45, stagger: 0.08 }, "-=0.42");
-
-          gsap.to(".scroll-progress", {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: root,
-              start: "top top",
-              end: "bottom bottom",
-              scrub: 0.2,
-            },
-          });
-
-          gsap.utils.toArray<HTMLElement>(".reveal").forEach((element) => {
-            gsap.from(element, {
-              autoAlpha: 0,
-              y: 42,
-              duration: 0.85,
-              ease: "power3.out",
+            gsap.to(root.querySelector(".scroll-progress"), {
+              scaleX: 1,
+              ease: "none",
               scrollTrigger: {
-                trigger: element,
-                start: "top 86%",
-                toggleActions: "play none none reverse",
+                trigger: root,
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0.2,
               },
             });
-          });
 
-          const route = document.querySelector<SVGPathElement>("#process-line");
+            gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".reveal")).forEach((element) => {
+              gsap.from(element, {
+                autoAlpha: 0,
+                y: 42,
+                duration: 0.85,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: element,
+                  start: "clamp(top 86%)",
+                  toggleActions: "play none none reverse",
+                },
+              });
+            });
+          }
+
+          const route = root.querySelector<SVGPathElement>("#process-line");
           if (route) {
             const length = route.getTotalLength();
             gsap.set(route, { strokeDasharray: length, strokeDashoffset: length });
             gsap.to(route, {
               strokeDashoffset: 0,
+              duration: reduceMotion ? 1.2 : undefined,
               ease: "none",
-              scrollTrigger: {
-                trigger: ".process-map",
-                start: "top 78%",
-                end: "bottom 54%",
-                scrub: 1,
-              },
+              scrollTrigger: reduceMotion
+                ? {
+                    trigger: root.querySelector(".process-map"),
+                    start: "clamp(top 86%)",
+                    toggleActions: "play none none reset",
+                  }
+                : {
+                    trigger: root.querySelector(".process-map"),
+                    start: "clamp(top 78%)",
+                    end: "clamp(bottom 54%)",
+                    scrub: 0.8,
+                    invalidateOnRefresh: true,
+                  },
             });
           }
 
-          if (desktop) {
-            gsap.utils.toArray<HTMLElement>(".project-media img").forEach((image) => {
+          const mobileRoute = root.querySelector<HTMLElement>(".process-line-mobile-active");
+          if (mobileRoute) {
+            gsap.set(mobileRoute, { scaleY: 0, transformOrigin: "top center" });
+            gsap.to(mobileRoute, {
+              scaleY: 1,
+              duration: reduceMotion ? 1.2 : undefined,
+              ease: "none",
+              scrollTrigger: reduceMotion
+                ? {
+                    trigger: root.querySelector(".process-map"),
+                    start: "clamp(top 86%)",
+                    toggleActions: "play none none reset",
+                  }
+                : {
+                    trigger: root.querySelector(".process-map"),
+                    start: "clamp(top 78%)",
+                    end: "clamp(bottom 54%)",
+                    scrub: 0.8,
+                    invalidateOnRefresh: true,
+                  },
+            });
+          }
+
+          if (desktop && !reduceMotion) {
+            gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".project-media img")).forEach((image) => {
               gsap.fromTo(
                 image,
                 { yPercent: -3, scale: 1.04 },
@@ -184,8 +215,8 @@ export function PortfolioPage() {
               );
             });
 
-            const glow = document.querySelector<HTMLElement>(".hero-glow");
-            const hero = document.querySelector<HTMLElement>(".hero");
+            const glow = root.querySelector<HTMLElement>(".hero-glow");
+            const hero = root.querySelector<HTMLElement>(".hero");
             if (glow && hero) {
               const xTo = gsap.quickTo(glow, "x", { duration: 0.65, ease: "power3.out" });
               const yTo = gsap.quickTo(glow, "y", { duration: 0.65, ease: "power3.out" });
@@ -199,11 +230,29 @@ export function PortfolioPage() {
             }
           }
         },
+        root,
       );
 
-      const refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => {
+      let refreshFrame = 0;
+      let disposed = false;
+      const scheduleRefresh = () => {
+        if (disposed) return;
         cancelAnimationFrame(refreshFrame);
+        refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
+      };
+      const images = Array.from(root.querySelectorAll("img"));
+      images.forEach((image) => {
+        if (!image.complete) image.addEventListener("load", scheduleRefresh, { once: true });
+      });
+      document.fonts?.ready.then(scheduleRefresh);
+      window.addEventListener("load", scheduleRefresh, { once: true });
+      scheduleRefresh();
+
+      return () => {
+        disposed = true;
+        cancelAnimationFrame(refreshFrame);
+        images.forEach((image) => image.removeEventListener("load", scheduleRefresh));
+        window.removeEventListener("load", scheduleRefresh);
         media.revert();
       };
     },
@@ -333,6 +382,10 @@ export function PortfolioPage() {
                 <path className="process-line-base" d="M50 340 C170 340 185 95 330 115 S510 350 645 285 S805 80 1050 115" />
                 <path id="process-line" d="M50 340 C170 340 185 95 330 115 S510 350 645 285 S805 80 1050 115" />
               </svg>
+              <div className="process-line-mobile" aria-hidden="true">
+                <span className="process-line-mobile-base" />
+                <span className="process-line-mobile-active" />
+              </div>
               <div className="process-node process-node--1"><span>01</span><strong>Product logic</strong><p>Goals, rules and constraints become a shared map.</p></div>
               <div className="process-node process-node--2"><span>02</span><strong>UX flow</strong><p>Complex tasks become focused decisions and clear states.</p></div>
               <div className="process-node process-node--3"><span>03</span><strong>Interface system</strong><p>Patterns, hierarchy and components create consistency.</p></div>
