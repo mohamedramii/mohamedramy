@@ -23,9 +23,9 @@ const editorial = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mohamedramy.dev"),
-  title: "Mohamed Ramy — Product-minded Frontend Developer & UI/UX Designer",
+  title: "Mohamed Ramy — Product-focused Frontend Developer & UI/UX Designer",
   description:
-    "Mohamed Ramy turns complex product logic into clear, production-ready interfaces using React, Next.js, TypeScript and Figma.",
+    "Mohamed Ramy turns complex product requirements into intuitive Figma flows and scalable, production-ready React and Next.js interfaces.",
   keywords: [
     "Mohamed Ramy",
     "Frontend Developer",
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
     "Egypt",
   ],
   openGraph: {
-    title: "Mohamed Ramy — Complex products, made clear.",
-    description: "Product-minded frontend development and UI/UX design.",
+    title: "Mohamed Ramy — Complex products, clearly engineered.",
+    description: "Product-focused frontend development and UI/UX design with React, Next.js and Figma.",
     images: ["/images/mohamed-ramy-key-visual.png"],
     type: "website",
   },

@@ -442,6 +442,7 @@ em {
 .hero-copy-column {
   position: relative;
   z-index: 2;
+  min-width: 0;
   padding-block: 2rem 3rem;
 }
 
@@ -478,6 +479,14 @@ em {
   color: var(--signal);
   font-weight: 400;
   letter-spacing: -0.05em;
+}
+
+.hero-line--long {
+  width: max-content;
+  max-width: 100%;
+  font-size: 0.62em;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
 }
 
 .hero-word {
@@ -1908,6 +1917,8 @@ footer {
     align-items: flex-start;
     line-height: 1.5;
   }
+
+  .hero-line--long { font-size: 0.52em; }
 
   .hero-actions { display: grid; }
   .hero-actions a { width: 100%; }

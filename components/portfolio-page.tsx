@@ -412,16 +412,16 @@ export function PortfolioPage() {
             <div className="hero-copy-column">
               <div className="hero-kicker">
                 <span className="availability-dot" aria-hidden="true" />
-                Product-minded Frontend Developer × UI/UX Designer
+                Product-focused Frontend Developer × UI/UX Designer
               </div>
               <h1 id="hero-title">
                 <span className="hero-line"><span className="hero-word">Complex</span></span>
                 <span className="hero-line hero-line--accent"><span className="hero-word">products,</span></span>
-                <span className="hero-line"><span className="hero-word">made clear.</span></span>
+                <span className="hero-line hero-line--long"><span className="hero-word">clearly engineered.</span></span>
               </h1>
               <p className="hero-copy">
-                I bring product thinking, UX design and frontend engineering together to turn complex
-                ideas into clear, production-ready experiences.
+                I turn complex product requirements into intuitive Figma flows and scalable,
+                production-ready React and Next.js interfaces.
               </p>
               <div className="hero-actions">
                 <a className={buttonVariants({ variant: "primary", size: "lg" })} href="#work">
