@@ -34,6 +34,11 @@ export const metadata: Metadata = {
     "Next.js Developer",
     "Egypt",
   ],
+  icons: {
+    icon: [{ url: "/images/mr-logo.png", type: "image/png" }],
+    shortcut: "/images/mr-logo.png",
+    apple: "/images/mr-logo.png",
+  },
   openGraph: {
     title: "Mohamed Ramy — Complex products, clearly engineered.",
     description: "Product-focused frontend development and UI/UX design with React, Next.js and Figma.",

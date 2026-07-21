@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { ArrowDownRight, ArrowUpRight, Download, Mail, Menu, MoveRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Download, Mail, Menu, MoveRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
@@ -20,17 +20,18 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
 
 function RouteMonogram({ className = "" }: { className?: string }) {
   return (
-    <svg
+    <span
       className={className}
-      viewBox="0 0 56 42"
       role="img"
       aria-label="Mohamed Ramy monogram"
     >
-      <path d="M4 36V7l12 15L28 7v29" />
-      <path d="M32 36V7h9c7 0 11 4 11 10 0 5-4 9-11 9h-9m10 0 11 10" />
-      <circle cx="4" cy="36" r="2.3" />
-      <circle cx="53" cy="36" r="2.3" />
-    </svg>
+      <Image
+        src="/images/mr-logo.png"
+        alt=""
+        fill
+        sizes="120px"
+      />
+    </span>
   );
 }
 
@@ -183,6 +184,41 @@ function ArchiveProjectCard({ project, index }: { project: (typeof archiveProjec
 
 export function PortfolioPage() {
   const pageRef = useRef<HTMLDivElement>(null);
+  const archiveTrackRef = useRef<HTMLDivElement>(null);
+  const [archiveScrollState, setArchiveScrollState] = useState({ canScrollLeft: false, canScrollRight: true });
+
+  useEffect(() => {
+    const track = archiveTrackRef.current;
+    if (!track) return;
+
+    const updateScrollState = () => {
+      const maxScrollLeft = Math.max(0, track.scrollWidth - track.clientWidth);
+      setArchiveScrollState({
+        canScrollLeft: track.scrollLeft > 2,
+        canScrollRight: track.scrollLeft < maxScrollLeft - 2,
+      });
+    };
+
+    updateScrollState();
+    track.addEventListener("scroll", updateScrollState, { passive: true });
+    const resizeObserver = new ResizeObserver(updateScrollState);
+    resizeObserver.observe(track);
+
+    return () => {
+      track.removeEventListener("scroll", updateScrollState);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  const scrollArchive = (direction: -1 | 1) => {
+    const track = archiveTrackRef.current;
+    const firstCard = track?.querySelector<HTMLElement>(".archive-card");
+    if (!track || !firstCard) return;
+
+    const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 0;
+    const step = firstCard.getBoundingClientRect().width + gap;
+    track.scrollBy({ left: direction * step, behavior: "smooth" });
+  };
 
   useGSAP(
     () => {
@@ -436,7 +472,7 @@ export function PortfolioPage() {
             <figure className="hero-portrait">
               <div className="portrait-frame">
                 <Image
-                  src="/images/mohamed-ramy-key-visual.png"
+                  src="/images/mohamed-ramy-cutout.png"
                   alt="Mohamed Ramy, frontend developer and UI/UX designer"
                   fill
                   priority
@@ -447,9 +483,6 @@ export function PortfolioPage() {
                 <span>Based in Alexandria, Egypt</span>
                 <span>Available worldwide</span>
               </figcaption>
-              <div className="portrait-stamp" aria-hidden="true">
-                <RouteMonogram />
-              </div>
             </figure>
           </div>
 
@@ -577,8 +610,28 @@ export function PortfolioPage() {
               aside="A wider selection of travel, hospitality, editorial and operational interfaces."
               light
             />
+            <div className="archive-navigation reveal" aria-label="More work carousel controls">
+              <button
+                type="button"
+                onClick={() => scrollArchive(-1)}
+                disabled={!archiveScrollState.canScrollLeft}
+                aria-label="Show previous projects"
+                aria-controls="archive-track"
+              >
+                <ArrowLeft aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollArchive(1)}
+                disabled={!archiveScrollState.canScrollRight}
+                aria-label="Show next projects"
+                aria-controls="archive-track"
+              >
+                <ArrowRight aria-hidden="true" />
+              </button>
+            </div>
           </div>
-          <div className="archive-track reveal">
+          <div className="archive-track reveal" id="archive-track" ref={archiveTrackRef}>
             {archiveProjects.map((project, index) => (
               <ArchiveProjectCard project={project} index={index} key={project.title} />
             ))}

@@ -142,22 +142,17 @@ em {
 }
 
 .brand-mark {
+  position: relative;
+  display: block;
   width: 2.4rem;
   height: 1.8rem;
-  overflow: visible;
-  color: var(--signal);
+  flex: 0 0 auto;
+  overflow: hidden;
 }
 
-.brand-mark path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.brand-mark circle {
-  fill: currentColor;
+.brand-mark img {
+  object-fit: contain;
+  transform: scale(2.3);
 }
 
 .brand-name {
@@ -541,7 +536,7 @@ em {
 
 .portrait-frame img {
   object-fit: cover;
-  object-position: 86% center;
+  object-position: 60% center;
   transform: scale(1.06);
 }
 
@@ -555,38 +550,6 @@ em {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.portrait-stamp {
-  position: absolute;
-  top: 1.2rem;
-  right: -0.8rem;
-  width: clamp(5rem, 8vw, 7.5rem);
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(184, 243, 106, 0.5);
-  border-radius: 50%;
-  background: rgba(13, 16, 14, 0.82);
-  backdrop-filter: blur(12px);
-  transform: rotate(7deg);
-}
-
-.portrait-stamp svg {
-  width: 58%;
-  color: var(--signal);
-}
-
-.portrait-stamp path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.portrait-stamp circle {
-  fill: currentColor;
 }
 
 .proof-strip {
@@ -1256,12 +1219,60 @@ em {
   scroll-margin-top: 5rem;
 }
 
+.archive-navigation {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin: clamp(1.75rem, 3vw, 2.75rem) 0 1.25rem;
+}
+
+.archive-navigation button {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(13, 16, 14, 0.22);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.archive-navigation button:hover:not(:disabled) {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--signal);
+  transform: translateY(-2px);
+}
+
+.archive-navigation button:focus-visible {
+  outline: 2px solid var(--olive);
+  outline-offset: 0.25rem;
+}
+
+.archive-navigation button:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.archive-navigation svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
 .archive-track {
   display: flex;
   gap: 1rem;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--page-pad);
   scrollbar-width: none;
   padding-inline: var(--page-pad);
   padding-bottom: 1rem;
@@ -1677,7 +1688,6 @@ footer {
   }
 
   .portrait-frame { aspect-ratio: 1 / 1.08; }
-  .portrait-stamp { right: 0; }
 
   .proof-strip {
     width: calc(100% + 2.5rem);
